@@ -29,7 +29,6 @@ class PointDrawer(context: Context, mapView: MapView) :ITool {
             return true
         }
     }
-    override lateinit var button: Button
     val pointGraphicsOverlay = GraphicsOverlay()
 
     init {

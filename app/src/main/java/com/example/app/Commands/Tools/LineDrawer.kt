@@ -33,7 +33,6 @@ class LineDrawer(private val context: Context, private val mapView: MapView):ITo
             return true
         }
     }
-    override lateinit  var button: Button
 
     override fun Activate() {
         pointList.clear()

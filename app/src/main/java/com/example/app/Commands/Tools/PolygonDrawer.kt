@@ -24,8 +24,6 @@ class PolygonDrawer(private val context: Context, private val mapView: MapView):
         mapView.graphicsOverlays.add(graphicsOverlay)
     }
 
-   lateinit override var button: Button
-
     private var pointList = PointCollection(SpatialReferences.getWebMercator())
 
 

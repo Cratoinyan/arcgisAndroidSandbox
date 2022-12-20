@@ -50,17 +50,6 @@ import com.example.app.databinding.ActivityMainBinding
 import android.graphics.Point as androidPoint
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit private var PointOnTouchListener: DefaultMapViewOnTouchListener
-    lateinit private var PolyLineOnTouchListener: DefaultMapViewOnTouchListener
-    lateinit private var PolygonOnTouchListener: DefaultMapViewOnTouchListener
-
-    private val pointGraphicsOverlay = GraphicsOverlay()
-    private val lineGraphicsOverlay = GraphicsOverlay()
-    private val polygonGraphicsOverlay = GraphicsOverlay()
-
-    private var pointList = PointCollection(SpatialReferences.getWebMercator())
-
     lateinit private var pointDrawer: PointDrawer
     lateinit private var lineDrawer: LineDrawer
     lateinit private var polygonDrawer: PolygonDrawer
@@ -71,12 +60,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
 
+        val linearLayout = LinearLayout(this)
+
         pointDrawer = PointDrawer(this@MainActivity, mapView)
         lineDrawer = LineDrawer(this@MainActivity, mapView)
         polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
 
-        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer))
-        activityMainBinding.layout.addView(toolManager)
+        activityMainBinding.layout.addView(linearLayout)
+        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer),linearLayout)
 
         toolManager.Initialize()
 

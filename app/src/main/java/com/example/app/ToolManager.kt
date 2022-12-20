@@ -7,9 +7,11 @@ import com.example.app.Commands.Tools.ITool
 import android.widget.Button
 import com.example.app.Commands.ICommand
 
-class ToolManager(context: Context, public var list: List<ICommand>):LinearLayout(context) {
+class ToolManager(context: Context, public var list: List<ICommand>,layout: LinearLayout){
     public var commandList = list
     var activeTool : ITool? = null
+    val layout = layout
+    val context = context
 
     @SuppressLint("ResourceType")
     fun Initialize(){
@@ -24,18 +26,27 @@ class ToolManager(context: Context, public var list: List<ICommand>):LinearLayou
             )
             button.text = command.id
             button.setOnClickListener {
-                if(command is ITool){
-                activeTool?.Deactivate()
-                activeTool = command
-                command?.Activate()
-                }
-                else{
-                    command.run()
-                }
+                onClickListener(command)
             }
-            command.button = button
-            addView(command.button)
+            layout.addView(button)
             id++
+        }
+    }
+
+    private fun onClickListener(command:ICommand){
+        if(command is ITool){
+            activeTool?.Deactivate()
+            if(command == activeTool)
+            {
+                activeTool = null
+            }
+            else{
+                activeTool = command
+                command.Activate()
+            }
+        }
+        else{
+            command.run()
         }
     }
 }

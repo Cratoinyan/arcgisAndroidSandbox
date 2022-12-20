@@ -7,5 +7,4 @@ interface ICommand {
     fun run()
     val id: String
     val onTouchListener: DefaultMapViewOnTouchListener
-    var button: Button
 }
