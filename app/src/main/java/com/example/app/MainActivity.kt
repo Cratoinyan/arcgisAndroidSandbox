@@ -50,11 +50,11 @@ import com.example.app.databinding.ActivityMainBinding
 import android.graphics.Point as androidPoint
 
 class MainActivity : AppCompatActivity() {
-    lateinit private var pointDrawer: PointDrawer
-    lateinit private var lineDrawer: LineDrawer
-    lateinit private var polygonDrawer: PolygonDrawer
+    private lateinit var pointDrawer: PointDrawer
+    private lateinit var lineDrawer: LineDrawer
+    private lateinit var polygonDrawer: PolygonDrawer
 
-    lateinit private var toolManager: ToolManager
+    private lateinit var toolManager: ToolManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

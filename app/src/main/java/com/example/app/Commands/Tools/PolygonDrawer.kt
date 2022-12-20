@@ -15,17 +15,13 @@ import com.esri.arcgisruntime.symbology.SimpleFillSymbol
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 
 class PolygonDrawer(private val context: Context, private val mapView: MapView): ITool {
-    override fun Activate() {
-        pointList.clear()
-        mapView.onTouchListener = onTouchListener
-    }
     private val graphicsOverlay = GraphicsOverlay()
+    private var pointList = PointCollection(SpatialReferences.getWebMercator())
+    override val id = "Add Polygon"
+
     init {
         mapView.graphicsOverlays.add(graphicsOverlay)
     }
-
-    private var pointList = PointCollection(SpatialReferences.getWebMercator())
-
 
     override val onTouchListener = object : DefaultMapViewOnTouchListener(context,mapView){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
@@ -39,13 +35,17 @@ class PolygonDrawer(private val context: Context, private val mapView: MapView):
         }
     }
 
+    override fun Activate() {
+        pointList.clear()
+        mapView.onTouchListener = onTouchListener
+    }
+
     override fun Deactivate() {
         mapView.onTouchListener = DefaultMapViewOnTouchListener(context,mapView)
     }
     override fun run() {
         TODO("Not yet implemented")
     }
-    override val id = "Add Polygon"
 
     private fun drawPolygon(point: Point){
         pointList.add(point)
@@ -54,7 +54,7 @@ class PolygonDrawer(private val context: Context, private val mapView: MapView):
 
         if (pointList.size >= 3){
 
-            var polygon = Polygon(pointList)
+            val polygon = Polygon(pointList)
 
             val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
             val polygonSymbol = SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, -0x4cba03, blueOutlineSymbol)

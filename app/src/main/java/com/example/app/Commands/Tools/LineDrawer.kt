@@ -11,17 +11,14 @@ import com.esri.arcgisruntime.mapping.view.MapView
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 
 class LineDrawer(private val context: Context, private val mapView: MapView):ITool {
-    override fun run() {
-        TODO("Not yet implemented")
-    }
-
     private var pointList = PointCollection(SpatialReferences.getWebMercator())
-    val graphicsOverlay = GraphicsOverlay()
+    private val graphicsOverlay = GraphicsOverlay()
+    override val id = "Add Line"
+
     init {
         mapView.graphicsOverlays.add(graphicsOverlay)
     }
 
-    override val id = "Add Line"
     override val onTouchListener = object : DefaultMapViewOnTouchListener(context,mapView){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             if (e != null) {
@@ -41,6 +38,10 @@ class LineDrawer(private val context: Context, private val mapView: MapView):ITo
 
     override fun Deactivate() {
         mapView.onTouchListener = DefaultMapViewOnTouchListener(context, mapView)
+    }
+
+    override fun run() {
+        TODO("Not yet implemented")
     }
 
     private fun drawLine(point: Point){
