@@ -47,8 +47,7 @@ class PolygonDrawer(private val context: Context, private val mapView: MapView):
     override fun run() {
         TODO("Not yet implemented")
     }
-    override val id: String
-        get() = TODO("Not yet implemented")
+    override val id = "Add Polygon"
 
     private fun drawPolygon(point: Point){
         pointList.add(point)

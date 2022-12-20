@@ -2,35 +2,39 @@ package com.example.app
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.MotionEvent
 import android.widget.LinearLayout
 import com.example.app.Commands.Tools.ITool
-import android.util.Log
 import android.widget.Button
-import android.widget.Toast
+import com.example.app.Commands.ICommand
 
-class ToolManager(context: Context, public var list: List<ITool>):LinearLayout(context) {
-    public var toolList = list
+class ToolManager(context: Context, public var list: List<ICommand>):LinearLayout(context) {
+    public var commandList = list
     var activeTool : ITool? = null
 
     @SuppressLint("ResourceType")
     fun Initialize(){
         var id = 0
         activeTool = null
-        for (iTool in toolList) {
+        for (command in commandList) {
             val button = Button(context)
             button.setId(id)
             button.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
+            button.text = command.id
             button.setOnClickListener {
+                if(command is ITool){
                 activeTool?.Deactivate()
-                activeTool = iTool
-                iTool?.Activate()
+                activeTool = command
+                command?.Activate()
+                }
+                else{
+                    command.run()
+                }
             }
-            iTool.button = button
-            addView(iTool.button)
+            command.button = button
+            addView(command.button)
             id++
         }
     }

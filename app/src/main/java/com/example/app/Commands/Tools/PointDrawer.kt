@@ -40,8 +40,7 @@ class PointDrawer(context: Context, mapView: MapView) :ITool {
         TODO("Not yet implemented")
     }
 
-    override val id: String
-        get() = "pointTest"
+    override val id = "Add Point"
 
 
     override fun Activate() {

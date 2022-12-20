@@ -21,8 +21,7 @@ class LineDrawer(private val context: Context, private val mapView: MapView):ITo
         mapView.graphicsOverlays.add(graphicsOverlay)
     }
 
-    override val id: String
-        get() = TODO("Not yet implemented")
+    override val id = "Add Line"
     override val onTouchListener = object : DefaultMapViewOnTouchListener(context,mapView){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             if (e != null) {
