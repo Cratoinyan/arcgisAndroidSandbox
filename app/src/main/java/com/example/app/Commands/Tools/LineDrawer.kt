@@ -2,7 +2,6 @@ package com.example.app.Commands.Tools
 
 import android.content.Context
 import android.view.MotionEvent
-import android.widget.Button
 import com.esri.arcgisruntime.geometry.*
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
 import com.esri.arcgisruntime.mapping.view.Graphic

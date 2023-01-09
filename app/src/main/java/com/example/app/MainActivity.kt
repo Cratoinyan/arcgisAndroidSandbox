@@ -17,37 +17,18 @@
 package com.example.app
 
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
-import com.esri.arcgisruntime.geometry.Point
-import com.esri.arcgisruntime.geometry.PointCollection
-import com.esri.arcgisruntime.geometry.Polygon
-import com.esri.arcgisruntime.geometry.Polyline
-import com.esri.arcgisruntime.geometry.SpatialReferences
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
-import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
-import com.esri.arcgisruntime.mapping.view.Graphic
-import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
-import com.esri.arcgisruntime.symbology.SimpleFillSymbol
-import com.esri.arcgisruntime.symbology.SimpleLineSymbol
-import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
 import com.example.app.Commands.Tools.LineDrawer
 import com.example.app.Commands.Tools.PointDrawer
 import com.example.app.Commands.Tools.PolygonDrawer
 import com.example.app.databinding.ActivityMainBinding
-import android.graphics.Point as androidPoint
 
 class MainActivity : AppCompatActivity() {
     private lateinit var pointDrawer: PointDrawer
