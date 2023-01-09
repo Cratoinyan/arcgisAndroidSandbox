@@ -3,10 +3,7 @@ package com.example.app.Commands.Tools
 import android.content.Context
 import android.view.MotionEvent
 import android.widget.Button
-import com.esri.arcgisruntime.geometry.Point
-import com.esri.arcgisruntime.geometry.PointCollection
-import com.esri.arcgisruntime.geometry.Polygon
-import com.esri.arcgisruntime.geometry.SpatialReferences
+import com.esri.arcgisruntime.geometry.*
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
 import com.esri.arcgisruntime.mapping.view.Graphic
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
@@ -54,14 +51,21 @@ class PolygonDrawer(private val context: Context, private val mapView: MapView):
 
         if (pointList.size >= 3){
 
-            val polygon = Polygon(pointList)
-
+            var polygon = Polygon(pointList)
+            if(GeometryEngine.isSimple(polygon))
+            {
+            }
+            else{
+                pointList.remove(point)
+                polygon = Polygon(pointList)
+            }
             val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
             val polygonSymbol = SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, -0x4cba03, blueOutlineSymbol)
             val polygonGraphic = Graphic(polygon, polygonSymbol)
 
             // add the polyline graphic to the graphics overlay
             graphicsOverlay.graphics.add(polygonGraphic)
+
         }
     }
 }
