@@ -16,10 +16,14 @@
 
 package com.example.app
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.data.FeatureTable
 import com.esri.arcgisruntime.data.Geodatabase
@@ -38,8 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pointDrawer: PointDrawer
     private lateinit var lineDrawer: LineDrawer
     private lateinit var polygonDrawer: PolygonDrawer
-    private val geodatabasePath = "/sdcard/DATA/data1.geodatabase"
-    private val gdb = "/sdcard/DATA/new.geodatabase"
+    private val geodatabasePath = "/sdcard/DATA/test.geodatabase"
 
     private lateinit var toolManager: ToolManager
 
@@ -62,34 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         setupMap()
 
-        // instantiate geodatabase with the path to the .geodatabase file
-        val geodatabase = Geodatabase(geodatabasePath)
-        Log.i("LOAD STATUS HEREEE",geodatabase.loadStatus.toString())
+        loadDB()
 
-        geodatabase.addLoadStatusChangedListener {
-            Log.i("LOAD STATUS HEREEE",geodatabase.loadStatus.toString())
-
-        }
-        // load the geodatabase
-        geodatabase.loadAsync()
-
-        Log.i("LOOK HEREEEEEEE",geodatabase.path)
-        geodatabase.addDoneLoadingListener {
-            Log.i("I AM LOADIIIIING",geodatabase.loadError.toString())
-
-            if (geodatabase.loadStatus == LoadStatus.LOADED) {
-                val featureTable: FeatureTable =
-                    geodatabase.getGeodatabaseFeatureTable("Hat")
-                val featureLayer = FeatureLayer(featureTable)
-                mapView.map.operationalLayers.add(featureLayer)
-            }
-        }
-
-       /* var gdbTest = Geodatabase.createAsync(gdb)
-
-        gdbTest.addDoneListener {
-            Log.i("here",gdbTest.isDone.toString())
-        }*/
     }
 
     private val activityMainBinding by lazy {
@@ -133,6 +110,45 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         mapView.dispose()
         super.onDestroy()
+    }
+
+    private fun loadDB(){
+        /*if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            Log.i("Permission","I have permission")
+        }
+        else{
+            Log.i("Permission","I don't have permission")
+        }*/
+        //askForpermission()
+
+
+        // instantiate geodatabase with the path to the .geodatabase file
+        val geodatabase = Geodatabase(geodatabasePath)
+        Log.i("LOAD STATUS HEREEE",geodatabase.loadStatus.toString())
+
+        geodatabase.addLoadStatusChangedListener {
+            Log.i("LOAD STATUS HEREEE",geodatabase.loadStatus.toString())
+
+        }
+        // load the geodatabase
+        geodatabase.loadAsync()
+
+        Log.i("LOOK HEREEEEEEE",geodatabase.path)
+        geodatabase.addDoneLoadingListener {
+           // Log.i("I AM LOADIIIIING",geodatabase.loadError.toString())
+
+            if (geodatabase.loadStatus == LoadStatus.LOADED) {
+                for (featureTable in geodatabase.geodatabaseFeatureTables){
+                    val featureLayer = FeatureLayer(featureTable)
+                    mapView.map.operationalLayers.add(featureLayer)
+                }
+            }
+        }
+    }
+
+    private fun askForpermission(){
+        ActivityCompat.requestPermissions(this, arrayOf( Manifest.permission.READ_EXTERNAL_STORAGE),2)
     }
 }
 
