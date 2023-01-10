@@ -51,10 +51,8 @@ class PolygonDrawer(private val context: Context, private val mapView: MapView):
         if (pointList.size >= 3){
 
             var polygon = Polygon(pointList)
-            if(GeometryEngine.isSimple(polygon))
+            if(!GeometryEngine.isSimple(polygon))
             {
-            }
-            else{
                 pointList.remove(point)
                 polygon = Polygon(pointList)
             }

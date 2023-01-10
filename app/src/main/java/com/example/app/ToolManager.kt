@@ -32,8 +32,7 @@ class ToolManager(private val context: Context, private var list: List<ICommand>
     private fun onClickListener(command:ICommand){
         if(command is ITool){
             activeTool?.Deactivate()
-            if(command == activeTool)
-            {
+            if(command == activeTool){
                 activeTool = null
             }
             else{
