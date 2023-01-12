@@ -33,6 +33,7 @@ import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.view.MapView
+import com.example.app.Commands.Tools.IsHat
 import com.example.app.Commands.Tools.LineDrawer
 import com.example.app.Commands.Tools.PointDrawer
 import com.example.app.Commands.Tools.PolygonDrawer
@@ -42,7 +43,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pointDrawer: PointDrawer
     private lateinit var lineDrawer: LineDrawer
     private lateinit var polygonDrawer: PolygonDrawer
+    private lateinit var isHat: IsHat
     private val geodatabasePath = "/sdcard/DATA/test.geodatabase"
+    private lateinit var geodatabase: Geodatabase
 
     private lateinit var toolManager: ToolManager
 
@@ -50,22 +53,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
 
+        setupMap()
+
         val linearLayout = LinearLayout(this)
 
         pointDrawer = PointDrawer(this@MainActivity, mapView)
         lineDrawer = LineDrawer(this@MainActivity, mapView)
         polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
+        isHat = IsHat(this@MainActivity,mapView, geodatabase)
 
         activityMainBinding.layout.addView(linearLayout)
-        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer),linearLayout)
+        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,isHat),linearLayout)
 
         toolManager.Initialize()
 
-        setApiKeyForApp()
 
-        setupMap()
 
-        loadDB()
 
     }
 
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity() {
 
     // set up your map here. You will call this method from onCreate()
     private fun setupMap() {
+        setApiKeyForApp()
 
         // create a map with the BasemapStyle streets
         val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC)
@@ -87,6 +91,8 @@ class MainActivity : AppCompatActivity() {
         mapView.map = map
         // set the viewpoint, Viewpoint(latitude, longitude, scale)
         mapView.setViewpoint(Viewpoint(39.9334, 32.8597, 200000.0))
+
+        loadDB()
     }
 
     private fun setApiKeyForApp(){
@@ -124,17 +130,11 @@ class MainActivity : AppCompatActivity() {
 
 
         // instantiate geodatabase with the path to the .geodatabase file
-        val geodatabase = Geodatabase(geodatabasePath)
-        Log.i("LOAD STATUS HEREEE",geodatabase.loadStatus.toString())
+        geodatabase = Geodatabase(geodatabasePath)
 
-        geodatabase.addLoadStatusChangedListener {
-            Log.i("LOAD STATUS HEREEE",geodatabase.loadStatus.toString())
-
-        }
         // load the geodatabase
         geodatabase.loadAsync()
 
-        Log.i("LOOK HEREEEEEEE",geodatabase.path)
         geodatabase.addDoneLoadingListener {
            // Log.i("I AM LOADIIIIING",geodatabase.loadError.toString())
 
