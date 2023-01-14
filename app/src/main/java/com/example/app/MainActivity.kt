@@ -48,28 +48,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var geodatabase: Geodatabase
 
     private lateinit var toolManager: ToolManager
+    private lateinit var mapManager: MapManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
 
-        setupMap()
+        mapManager = MapManager(mapView,geodatabasePath)
+        mapManager.setupMap()
 
         val linearLayout = LinearLayout(this)
 
         pointDrawer = PointDrawer(this@MainActivity, mapView)
         lineDrawer = LineDrawer(this@MainActivity, mapView)
         polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
-        isHat = IsHat(this@MainActivity,mapView, geodatabase)
+        isHat = IsHat(this@MainActivity,mapView, mapManager.geodatabase)
 
         activityMainBinding.layout.addView(linearLayout)
         toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,isHat),linearLayout)
 
         toolManager.Initialize()
-
-
-
-
+        
     }
 
     private val activityMainBinding by lazy {
@@ -78,29 +77,6 @@ class MainActivity : AppCompatActivity() {
 
     private val mapView: MapView by lazy {
         activityMainBinding.mapView
-    }
-
-    // set up your map here. You will call this method from onCreate()
-    private fun setupMap() {
-        setApiKeyForApp()
-
-        // create a map with the BasemapStyle streets
-        val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC)
-
-        // set the map to be displayed in the layout's MapView
-        mapView.map = map
-        // set the viewpoint, Viewpoint(latitude, longitude, scale)
-        mapView.setViewpoint(Viewpoint(39.9334, 32.8597, 200000.0))
-
-        loadDB()
-    }
-
-    private fun setApiKeyForApp(){
-        // set your API key
-        // Note: it is not best practice to store API keys in source code. The API key is referenced
-        // here for the convenience of this tutorial.
-
-        ArcGISRuntimeEnvironment.setApiKey("AAPK81534aabc5ae4f7d9f09428664a6755a-Nx3w3r_hxOkhKWmdW8S9dyyDIKRRMWV18c0eiOn2q-XLkGDWdwfY_M694JkOmlk")
     }
 
     override fun onPause() {
@@ -116,39 +92,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         mapView.dispose()
         super.onDestroy()
-    }
-
-    private fun loadDB(){
-        /*if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            Log.i("Permission","I have permission")
-        }
-        else{
-            Log.i("Permission","I don't have permission")
-        }*/
-        //askForpermission()
-
-
-        // instantiate geodatabase with the path to the .geodatabase file
-        geodatabase = Geodatabase(geodatabasePath)
-
-        // load the geodatabase
-        geodatabase.loadAsync()
-
-        geodatabase.addDoneLoadingListener {
-           // Log.i("I AM LOADIIIIING",geodatabase.loadError.toString())
-
-            if (geodatabase.loadStatus == LoadStatus.LOADED) {
-                for (featureTable in geodatabase.geodatabaseFeatureTables){
-                    val featureLayer = FeatureLayer(featureTable)
-                    mapView.map.operationalLayers.add(featureLayer)
-                }
-            }
-        }
-    }
-
-    private fun askForpermission(){
-        ActivityCompat.requestPermissions(this, arrayOf( Manifest.permission.READ_EXTERNAL_STORAGE),2)
     }
 }
 
