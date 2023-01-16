@@ -14,15 +14,12 @@ import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
 import com.esri.arcgisruntime.mapping.view.MapView
 
-class SelectFeature(private val context: Context, private val mapView: MapView, private val geodatabase: Geodatabase, private val layerName:String, override val id:String):ITool {
-    private lateinit var featureTable:GeodatabaseFeatureTable
+class SelectFeature(private val context: Context, private val mapView: MapView, private val layerName:String, override val id:String):ITool {
     private lateinit var featureLayer: FeatureLayer
 
     override fun run() {
         TODO("Not yet implemented")
     }
-
-//    override val id = "Select Hat"
 
     override val onTouchListener= object : DefaultMapViewOnTouchListener(context,mapView){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
@@ -55,7 +52,7 @@ class SelectFeature(private val context: Context, private val mapView: MapView, 
     private fun selectFeature(point: Point){
         val extent = Envelope(point,30.0,30.0)
 
-        featureTable = geodatabase.getGeodatabaseFeatureTable(layerName)
+        val selectedFeatures = featureLayer.selectedFeaturesAsync
         val queryParams = QueryParameters()
         queryParams.spatialRelationship = QueryParameters.SpatialRelationship.INTERSECTS
         queryParams.geometry = extent
@@ -69,6 +66,7 @@ class SelectFeature(private val context: Context, private val mapView: MapView, 
                 }
                 else{
                     Toast.makeText(context,"There is no ${layerName}",Toast.LENGTH_LONG).show()
+                    featureLayer.selectFeatures(selectedFeatures.get())
                 }
             }catch (e: Exception){
                 Toast.makeText(context,"Feature search failed Error: ${e.message}",Toast.LENGTH_LONG).show()

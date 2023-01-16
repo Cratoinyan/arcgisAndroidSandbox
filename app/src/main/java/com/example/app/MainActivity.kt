@@ -48,9 +48,9 @@ class MainActivity : AppCompatActivity() {
         val pointDrawer = PointDrawer(this@MainActivity, mapView)
         val lineDrawer = LineDrawer(this@MainActivity, mapView)
         val polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
-        val selectHat = SelectFeature(this@MainActivity,mapView, mapManager.geoDataBase,"Hat","Select Hat")
-        val selectTrafo = SelectFeature(this@MainActivity,mapView, mapManager.geoDataBase,"Trafo","Select Trafo")
-        val selectIstasyon = SelectFeature(this@MainActivity,mapView, mapManager.geoDataBase,"IstasyonAlani","Select Istasyon Alanı")
+        val selectHat = SelectFeature(this@MainActivity,mapView,"Hat","Select Hat")
+        val selectTrafo = SelectFeature(this@MainActivity,mapView,"Trafo","Select Trafo")
+        val selectIstasyon = SelectFeature(this@MainActivity,mapView,"IstasyonAlani","Select Istasyon Alanı")
 
 
         activityMainBinding.layout.addView(scrollView)
