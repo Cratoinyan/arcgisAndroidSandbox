@@ -18,7 +18,7 @@ class MapManager(var mapView: MapView, val geodatabasePath:String) {
         setApiKeyForApp()
 
         // create a map with the BasemapStyle streets
-        val map = ArcGISMap(BasemapStyle.ARCGIS_DARK_GRAY_BASE)
+        val map = ArcGISMap(BasemapStyle.ARCGIS_NAVIGATION)
 
         // set the map to be displayed in the layout's MapView
         mapView.map = map
@@ -50,6 +50,8 @@ class MapManager(var mapView: MapView, val geodatabasePath:String) {
                     val featureLayer = FeatureLayer(featureTable)
                     mapView.map.operationalLayers.add(featureLayer)
                 }
+
+//                geoDataBase.close()
             }
         }
     }
