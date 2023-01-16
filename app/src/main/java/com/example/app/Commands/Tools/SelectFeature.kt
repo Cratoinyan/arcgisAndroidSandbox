@@ -14,16 +14,15 @@ import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
 import com.esri.arcgisruntime.mapping.view.MapView
 
-class IsHat(private val context: Context, private val mapView: MapView, private val geodatabase: Geodatabase):ITool {
+class SelectFeature(private val context: Context, private val mapView: MapView, private val geodatabase: Geodatabase, private val layerName:String, override val id:String):ITool {
     private lateinit var featureTable:GeodatabaseFeatureTable
     private lateinit var featureLayer: FeatureLayer
-    private val layerName = "Hat"
 
     override fun run() {
         TODO("Not yet implemented")
     }
 
-    override val id = "Select Hat"
+//    override val id = "Select Hat"
 
     override val onTouchListener= object : DefaultMapViewOnTouchListener(context,mapView){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {

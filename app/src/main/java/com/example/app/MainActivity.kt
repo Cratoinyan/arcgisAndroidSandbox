@@ -16,36 +16,20 @@
 
 package com.example.app
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
-import com.esri.arcgisruntime.data.FeatureTable
-import com.esri.arcgisruntime.data.Geodatabase
-import com.esri.arcgisruntime.layers.FeatureLayer
-import com.esri.arcgisruntime.loadable.LoadStatus
-import com.esri.arcgisruntime.mapping.ArcGISMap
-import com.esri.arcgisruntime.mapping.BasemapStyle
-import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.view.MapView
-import com.example.app.Commands.Tools.IsHat
+import com.example.app.Commands.Tools.SelectFeature
 import com.example.app.Commands.Tools.LineDrawer
 import com.example.app.Commands.Tools.PointDrawer
 import com.example.app.Commands.Tools.PolygonDrawer
 import com.example.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var pointDrawer: PointDrawer
-    private lateinit var lineDrawer: LineDrawer
-    private lateinit var polygonDrawer: PolygonDrawer
-    private lateinit var isHat: IsHat
-    private val geodatabasePath = "/sdcard/DATA/test.geodatabase"
-    private lateinit var geodatabase: Geodatabase
+    private val geoDatabasePath = "/sdcard/DATA/test.geodatabase"
 
     private lateinit var toolManager: ToolManager
     private lateinit var mapManager: MapManager
@@ -54,18 +38,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
 
-        mapManager = MapManager(mapView,geodatabasePath)
+        mapManager = MapManager(mapView,geoDatabasePath)
         mapManager.setupMap()
 
+        val scrollView = HorizontalScrollView(this)
         val linearLayout = LinearLayout(this)
+        scrollView.addView(linearLayout)
 
-        pointDrawer = PointDrawer(this@MainActivity, mapView)
-        lineDrawer = LineDrawer(this@MainActivity, mapView)
-        polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
-        isHat = IsHat(this@MainActivity,mapView, mapManager.geodatabase)
+        val pointDrawer = PointDrawer(this@MainActivity, mapView)
+        val lineDrawer = LineDrawer(this@MainActivity, mapView)
+        val polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
+        val selectHat = SelectFeature(this@MainActivity,mapView, mapManager.geoDataBase,"Hat","Select Hat")
+        val selectTrafo = SelectFeature(this@MainActivity,mapView, mapManager.geoDataBase,"Trafo","Select Trafo")
+        val selectIstasyon = SelectFeature(this@MainActivity,mapView, mapManager.geoDataBase,"IstasyonAlani","Select Istasyon Alanı")
 
-        activityMainBinding.layout.addView(linearLayout)
-        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,isHat),linearLayout)
+
+        activityMainBinding.layout.addView(scrollView)
+        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,selectHat,selectTrafo,selectIstasyon),linearLayout)
 
         toolManager.Initialize()
         

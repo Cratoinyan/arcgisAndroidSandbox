@@ -11,14 +11,14 @@ import com.esri.arcgisruntime.mapping.view.MapView
 
 class MapManager(var mapView: MapView, val geodatabasePath:String) {
 
-    lateinit var geodatabase: Geodatabase
+    lateinit var geoDataBase: Geodatabase
 
     // set up your map here. You will call this method from onCreate()
     fun setupMap() {
         setApiKeyForApp()
 
         // create a map with the BasemapStyle streets
-        val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC)
+        val map = ArcGISMap(BasemapStyle.ARCGIS_DARK_GRAY_BASE)
 
         // set the map to be displayed in the layout's MapView
         mapView.map = map
@@ -37,22 +37,19 @@ class MapManager(var mapView: MapView, val geodatabasePath:String) {
     }
 
     private fun loadDB(){
-        // instantiate geodatabase with the path to the .geodatabase file
-        geodatabase = Geodatabase(geodatabasePath)
+        // instantiate geoDataBase with the path to the .geodatabase file
+        geoDataBase = Geodatabase(geodatabasePath)
 
-        // load the geodatabase
-        geodatabase.loadAsync()
+        // load the geoDataBase
+        geoDataBase.loadAsync()
 
-        geodatabase.addDoneLoadingListener {
-            // Log.i("I AM LOADIIIIING",geodatabase.loadError.toString())
+        geoDataBase.addDoneLoadingListener {
 
-            if (geodatabase.loadStatus == LoadStatus.LOADED) {
-                for (featureTable in geodatabase.geodatabaseFeatureTables){
+            if (geoDataBase.loadStatus == LoadStatus.LOADED) {
+                for (featureTable in geoDataBase.geodatabaseFeatureTables){
                     val featureLayer = FeatureLayer(featureTable)
                     mapView.map.operationalLayers.add(featureLayer)
                 }
-                val extent = geodatabase.getGeodatabaseFeatureTable("Hat").extent
-//                mapView.setViewpoint(Viewpoint(extent))
             }
         }
     }
