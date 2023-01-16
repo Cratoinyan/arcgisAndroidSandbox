@@ -1,10 +1,10 @@
 package com.example.app.Commands.Tools
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.Toast
-import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.Geodatabase
 import com.esri.arcgisruntime.data.GeodatabaseFeatureTable
 import com.esri.arcgisruntime.data.QueryParameters
@@ -30,7 +30,7 @@ class SelectFeature(private val context: Context, private val mapView: MapView, 
                 val x = e.x.toInt()
                 val y = e.y.toInt()
                 val newPoint = mapView.screenToLocation(android.graphics.Point(x, y))
-                FindFeature(newPoint)
+                selectFeature(newPoint)
             }
             return true
         }
@@ -52,7 +52,7 @@ class SelectFeature(private val context: Context, private val mapView: MapView, 
         featureLayer.clearSelection()
     }
 
-    private fun FindFeature(point: Point){
+    private fun selectFeature(point: Point){
         val extent = Envelope(point,30.0,30.0)
 
         featureTable = geodatabase.getGeodatabaseFeatureTable(layerName)
@@ -70,10 +70,10 @@ class SelectFeature(private val context: Context, private val mapView: MapView, 
                         featureLayer.selectFeature(feature)
                     }
                     Log.i("RESULT",result.get().toString())
-                    Toast.makeText(context,"There is a line here",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"There is a ${layerName} here",Toast.LENGTH_LONG).show()
                 }
                 else{
-                    Toast.makeText(context,"There is no line",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"There is no ${layerName}",Toast.LENGTH_LONG).show()
                 }
             }catch (e: Exception){
                 Toast.makeText(context,"Feature search failed Error: ${e.message}",Toast.LENGTH_LONG).show()
