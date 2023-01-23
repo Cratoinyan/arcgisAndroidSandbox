@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         val linearLayout = LinearLayout(this)
         scrollView.addView(linearLayout)
 
-        val pointDrawer = PointDrawer(this@MainActivity, mapView)
+        val pointDrawer = PointDrawer(this@MainActivity, mapView,dbManager)
         val lineDrawer = LineDrawer(this@MainActivity, mapView)
         val polygonDrawer = PolygonDrawer(this@MainActivity, mapView)
         val selectHat = SelectFeature(this@MainActivity,mapView,"Hat","Select Hat")
