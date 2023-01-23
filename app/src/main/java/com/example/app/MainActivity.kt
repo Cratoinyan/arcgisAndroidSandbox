@@ -25,6 +25,7 @@ import com.example.app.Commands.Tools.SelectFeature
 import com.example.app.Commands.Tools.LineDrawer
 import com.example.app.Commands.Tools.PointDrawer
 import com.example.app.Commands.Tools.PolygonDrawer
+import com.example.app.Managers.DBManager
 import com.example.app.Managers.MapManager
 import com.example.app.Managers.ToolManager
 import com.example.app.databinding.ActivityMainBinding
@@ -34,12 +35,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var toolManager: ToolManager
     private lateinit var mapManager: MapManager
+    private lateinit var dbManager: DBManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
 
-        mapManager = MapManager(mapView,geoDatabasePath)
+        dbManager = DBManager(geoDatabasePath)
+        mapManager = MapManager(mapView, dbManager)
         mapManager.setupMap()
 
         val scrollView = HorizontalScrollView(this)

@@ -9,7 +9,7 @@ import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.view.MapView
 
-class MapManager(var mapView: MapView, val geodatabasePath:String) {
+class MapManager(var mapView: MapView,private val dbManager: DBManager) {
 
     lateinit var geoDataBase: Geodatabase
 
@@ -37,22 +37,6 @@ class MapManager(var mapView: MapView, val geodatabasePath:String) {
     }
 
     private fun loadDB(){
-        // instantiate geoDataBase with the path to the .geodatabase file
-        geoDataBase = Geodatabase(geodatabasePath)
-
-        // load the geoDataBase
-        geoDataBase.loadAsync()
-
-        geoDataBase.addDoneLoadingListener {
-
-            if (geoDataBase.loadStatus == LoadStatus.LOADED) {
-                for (featureTable in geoDataBase.geodatabaseFeatureTables){
-                    val featureLayer = FeatureLayer(featureTable)
-                    mapView.map.operationalLayers.add(featureLayer)
-                }
-
-//                geoDataBase.close()
-            }
-        }
+        dbManager.loadDB(mapView.map)
     }
 }
