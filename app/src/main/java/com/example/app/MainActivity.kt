@@ -19,13 +19,14 @@ package com.example.app
 import android.os.Bundle
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import com.esri.arcgisruntime.mapping.view.MapView
 import com.example.app.Commands.Tools.SelectFeature
 import com.example.app.Commands.Tools.LineDrawer
 import com.example.app.Commands.Tools.PointDrawer
 import com.example.app.Commands.Tools.PolygonDrawer
+import com.example.app.Managers.MapManager
+import com.example.app.Managers.ToolManager
 import com.example.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

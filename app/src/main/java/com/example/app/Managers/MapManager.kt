@@ -1,4 +1,4 @@
-package com.example.app
+package com.example.app.Managers
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.data.Geodatabase
