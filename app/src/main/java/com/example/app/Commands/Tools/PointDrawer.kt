@@ -84,7 +84,7 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
         val view = inflater.inflate(R.layout.save_point_popup,null)
 
         //show popupwindow
-        val width = LinearLayout.LayoutParams.WRAP_CONTENT
+        val width = LinearLayout.LayoutParams.MATCH_PARENT
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
         popupWindow = PopupWindow(view, width, height, false)
         popupWindow?.showAtLocation(layout,Gravity.BOTTOM,0,0)

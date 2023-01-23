@@ -21,7 +21,8 @@
         android:layout_height="wrap_content"
         android:text="Add Point"
         app:layout_constraintBottom_toTopOf="@+id/popup_close_button"
-        tools:layout_editor_absoluteX="297dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/popup_close_button" />
 
     <Button
         android:id="@+id/cancel"
