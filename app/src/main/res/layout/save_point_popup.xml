@@ -12,24 +12,109 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Point"
-        app:layout_constraintBottom_toTopOf="@+id/popup_close_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/popup_close_button" />
+        app:layout_constraintEnd_toEndOf="@+id/field_input"
+        app:layout_constraintTop_toBottomOf="@+id/field_input" />
 
     <Button
         android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
         android:text="Cancel"
         app:layout_constraintEnd_toStartOf="@+id/popup_close_button"
-        app:layout_constraintTop_toTopOf="@+id/popup_close_button" />
+        app:layout_constraintTop_toBottomOf="@+id/field_input" />
+
+    <TextView
+        android:id="@+id/code_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kodu"
+        app:layout_constraintBottom_toBottomOf="@+id/code_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/code_input" />
+
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Adı"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/code_text" />
+
+    <TextView
+        android:id="@+id/type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Tipi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_text" />
+
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Üretim Tarihi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/type_text" />
+
+    <EditText
+        android:id="@+id/code_input"
+        android:layout_width="275dp"
+        android:layout_height="34dp"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/code_text"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/name_input"
+        android:layout_width="292dp"
+        android:layout_height="33dp"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/name_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/name_text"
+        app:layout_constraintTop_toTopOf="@+id/name_text" />
+
+    <EditText
+        android:id="@+id/type_input"
+        android:layout_width="287dp"
+        android:layout_height="34dp"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/type_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/type_text"
+        app:layout_constraintTop_toTopOf="@+id/type_text" />
+
+    <EditText
+        android:id="@+id/date_input"
+        android:layout_width="229dp"
+        android:layout_height="33dp"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/date_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/date_text"
+        app:layout_constraintTop_toTopOf="@+id/date_text" />
+
+    <EditText
+        android:id="@+id/field_input"
+        android:layout_width="283dp"
+        android:layout_height="29dp"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/field_text"
+        app:layout_constraintTop_toTopOf="@+id/field_text" />
+
+    <TextView
+        android:id="@+id/field_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Field"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_text" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

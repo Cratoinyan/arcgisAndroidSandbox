@@ -52,6 +52,7 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
     override fun Deactivate() {
         mapView.onTouchListener = DefaultMapViewOnTouchListener(context,mapView)
         pointGraphicsOverlay.graphics.clear()
+        popupWindow?.dismiss()
     }
 
     override fun run() {
@@ -63,7 +64,7 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
         pointGraphicsOverlay.graphics.clear()
         popupWindow?.dismiss()
 
-       val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
+        val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
 
         val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
         simpleMarkerSymbol.outline = blueOutlineSymbol
