@@ -1,5 +1,6 @@
 package com.example.app.Managers
 
+import android.util.Log
 import com.esri.arcgisruntime.data.ArcGISFeature
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.Geodatabase
@@ -8,6 +9,7 @@ import com.esri.arcgisruntime.internal.jni.CoreFeature
 import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.loadable.LoadStatus
 import com.esri.arcgisruntime.mapping.ArcGISMap
+import com.example.app.Data.Trafo
 
 class DBManager(val geodatabasePath:String) {
     public lateinit var geoDataBase:Geodatabase
@@ -32,11 +34,24 @@ class DBManager(val geodatabasePath:String) {
         }
     }
 
-    fun addTrafo(point: Point){
-        val featureTable =  geoDataBase.getGeodatabaseFeatureTable(trafoLayer)
-        var feature = featureTable.createFeature()
-        feature.geometry = point
+    fun addTrafo(trafo: Trafo){
+        val attribute = mapOf(
+        "adi" to trafo.name,
+        "field" to trafo.field,
+        "kodu" to trafo.code,
+        "tipi" to trafo.type,
+        "uretimtarihi" to trafo.date)
 
-        featureTable.addFeatureAsync(feature)
+        val featureTable =  geoDataBase.getGeodatabaseFeatureTable(trafoLayer)
+        val template = featureTable.featureTemplates
+        var feature = featureTable.createFeature(attribute,trafo.point)
+
+        Log.i("HERE",template.toString())//trafo attribute keys[adi,field,kodu,objectid(db will handle this),tipi,uretimtarihi]
+
+        val future = featureTable.addFeatureAsync(feature)
+
+        future.addDoneListener {
+            Log.i("HERE",feature.attributes.toString())
+        }
     }
 }

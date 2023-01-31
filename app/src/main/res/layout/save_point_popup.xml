@@ -62,8 +62,8 @@
 
     <EditText
         android:id="@+id/code_input"
-        android:layout_width="275dp"
-        android:layout_height="34dp"
+        android:layout_width="293dp"
+        android:layout_height="45dp"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/code_text"
@@ -71,28 +71,30 @@
 
     <EditText
         android:id="@+id/name_input"
-        android:layout_width="292dp"
-        android:layout_height="33dp"
+        android:layout_width="293dp"
+        android:layout_height="43dp"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="@+id/name_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/name_text"
+        app:layout_constraintEnd_toEndOf="@+id/code_input"
+        app:layout_constraintStart_toStartOf="@+id/code_input"
         app:layout_constraintTop_toTopOf="@+id/name_text" />
 
     <EditText
         android:id="@+id/type_input"
-        android:layout_width="287dp"
-        android:layout_height="34dp"
-        android:inputType="text"
+        android:layout_width="293dp"
+        android:layout_height="45dp"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/type_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/type_text"
+        app:layout_constraintEnd_toEndOf="@+id/name_input"
+        app:layout_constraintStart_toStartOf="@+id/name_input"
         app:layout_constraintTop_toTopOf="@+id/type_text" />
 
-    <EditText
+    <DatePicker
         android:id="@+id/date_input"
-        android:layout_width="229dp"
-        android:layout_height="33dp"
+        android:layout_width="221dp"
+        android:layout_height="70dp"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="@+id/date_text"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,11 +103,11 @@
 
     <EditText
         android:id="@+id/field_input"
-        android:layout_width="283dp"
-        android:layout_height="29dp"
+        android:layout_width="293dp"
+        android:layout_height="wrap_content"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/field_text"
+        app:layout_constraintEnd_toEndOf="@+id/type_input"
+        app:layout_constraintStart_toStartOf="@+id/type_input"
         app:layout_constraintTop_toTopOf="@+id/field_text" />
 
     <TextView
