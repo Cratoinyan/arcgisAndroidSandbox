@@ -86,7 +86,7 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
         val inflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.save_point_popup,null)
 
-        //show popupwindow
+        //show popupwindow TODO: Take a look at bottom sheet dialog
         val width = LinearLayout.LayoutParams.MATCH_PARENT
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
         popupWindow = PopupWindow(view, width, height, true)
@@ -117,7 +117,7 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
                 cal,
                 field.text.toString())
 
-            dbManager.addTrafo(trafo)
+            dbManager.addTrafoToSQLite(trafo)
             pointGraphicsOverlay.graphics.clear()
             popupWindow?.dismiss()
         }

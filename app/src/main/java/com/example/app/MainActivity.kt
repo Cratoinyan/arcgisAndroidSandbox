@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
 
-        dbManager = DBManager(geoDatabasePath)
+        dbManager = DBManager(geoDatabasePath,this)
         mapManager = MapManager(mapView, dbManager)
         mapManager.setupMap()
 
