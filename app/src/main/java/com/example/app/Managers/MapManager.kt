@@ -37,6 +37,6 @@ class MapManager(var mapView: MapView,private val dbManager: DBManager) {
     }
 
     private fun loadDB(){
-        dbManager.loadFromSQLite(mapView)
+        dbManager.loadDB(mapView.map)
     }
 }

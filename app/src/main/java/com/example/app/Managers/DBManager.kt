@@ -19,9 +19,22 @@ class DBManager(val geodatabasePath:String, val context: Context){
     lateinit var geoDataBase:Geodatabase
     lateinit var sqLiteDB: SQLiteDB
     private val trafoLayer = "Trafo"
-
+    var activeDB = 0
     init {
         sqLiteDB = SQLiteDB(context)
+    }
+
+    fun switchDB(map: MapView){
+        if(activeDB == 0){
+            activeDB = 1
+            map.map.operationalLayers.clear()
+            loadFromSQLite(map)
+        }
+        else{
+            activeDB = 0
+            map.graphicsOverlays.clear()
+            loadDB(map.map)
+        }
     }
 
     fun loadDB(map: ArcGISMap){
@@ -44,12 +57,21 @@ class DBManager(val geodatabasePath:String, val context: Context){
     }
 
     fun addTrafo(trafo: Trafo){
+        if (activeDB == 0){
+            addTrafoToGeoDB(trafo)
+        }
+        else{
+            addTrafoToSQLite(trafo)
+        }
+    }
+
+    fun addTrafoToGeoDB(trafo: Trafo){
         val attribute = mapOf(
-        "adi" to trafo.name,
-        "field" to trafo.field,
-        "kodu" to trafo.code,
-        "tipi" to trafo.type,
-        "uretimtarihi" to trafo.date)
+            "adi" to trafo.name,
+            "field" to trafo.field,
+            "kodu" to trafo.code,
+            "tipi" to trafo.type,
+            "uretimtarihi" to trafo.date)
 
         val featureTable =  geoDataBase.getGeodatabaseFeatureTable(trafoLayer)
         val template = featureTable.featureTemplates

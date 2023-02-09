@@ -117,7 +117,7 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
                 cal,
                 field.text.toString())
 
-            dbManager.addTrafoToSQLite(trafo)
+            dbManager.addTrafo(trafo)
             pointGraphicsOverlay.graphics.clear()
             popupWindow?.dismiss()
         }

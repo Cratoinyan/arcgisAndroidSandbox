@@ -21,6 +21,7 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.esri.arcgisruntime.mapping.view.MapView
+import com.example.app.Commands.SwitchDB
 import com.example.app.Commands.Tools.SelectFeature
 import com.example.app.Commands.Tools.LineDrawer
 import com.example.app.Commands.Tools.PointDrawer
@@ -55,10 +56,11 @@ class MainActivity : AppCompatActivity() {
         val selectHat = SelectFeature(this@MainActivity,mapView,"Hat","Select Hat")
         val selectTrafo = SelectFeature(this@MainActivity,mapView,"Trafo","Select Trafo")
         val selectIstasyon = SelectFeature(this@MainActivity,mapView,"IstasyonAlani","Select Istasyon Alanı")
+        val switchDB = SwitchDB(dbManager,mapManager)
 
 
         activityMainBinding.layout.addView(scrollView)
-        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,selectHat,selectTrafo,selectIstasyon),linearLayout)
+        toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,selectHat,selectTrafo,selectIstasyon,switchDB),linearLayout)
 
         toolManager.Initialize()
         
