@@ -7,8 +7,8 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.esri.arcgisruntime.geometry.Point
-import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.view.Graphic
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
@@ -24,6 +24,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         private val COL_KEY = "ID"
         private val COL_X = "X"
         private val COL_Y = "Y"
+        private val COL_SHAPE = "SHAPE"
         private val COL_NAME = "NAME"
         private val COL_CODE = "CODE"
         private val COL_FIELD = "FIELD"
@@ -36,8 +37,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
     override fun onCreate(db: SQLiteDatabase?) {
         val CREATE_CONTACTS_TABLE = ("CREATE TABLE "+ TRAFO_TABLE_NAME + "(" +
                 "$COL_KEY INTEGER PRIMARY KEY," +
-                "$COL_X REAL," +
-                "$COL_Y REAL," +
+                "$COL_SHAPE text," +
                 "$COL_NAME text," +
                 "$COL_CODE text," +
                 "$COL_FIELD text," +
@@ -55,8 +55,9 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         val db = this.writableDatabase
         val contentValues = ContentValues()
 
-        contentValues.put(COL_X,trafo.point.x)
-        contentValues.put(COL_Y,trafo.point.y)
+        Log.i("POINT",trafo.point.toJson())
+
+        contentValues.put(COL_SHAPE,trafo.point.toJson())
         contentValues.put(COL_NAME,trafo.name)
         contentValues.put(COL_CODE,trafo.code)
         contentValues.put(COL_FIELD,trafo.field)
@@ -73,7 +74,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
 
     @SuppressLint("Range")
     fun loadTrafo(map:MapView){
-        val db = this.writableDatabase
+        val db = this.readableDatabase
         val query = "select * from $TRAFO_TABLE_NAME"
         var cursor: Cursor? = null
 
@@ -86,8 +87,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         }
 
         var point:Point
-        var x:Double
-        var y:Double
+        var shape: String
         var code:String
         var name:String
         var type:Short
@@ -102,21 +102,23 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
                 type = cursor.getShort(cursor.getColumnIndex(COL_TYPE))
                 date = cursor.getLong(cursor.getColumnIndex(COL_DATE))
                 field = cursor.getString(cursor.getColumnIndex(COL_FIELD))
-                x = cursor.getDouble(cursor.getColumnIndex(COL_X))
-                y = cursor.getDouble(cursor.getColumnIndex(COL_Y))
-                point = Point(x,y)
+                shape = cursor.getString(cursor.getColumnIndex(COL_SHAPE))
+
+                point = Point.fromJson(shape) as Point
                 var calendar = Calendar.getInstance()
                 calendar.time = Date(date)
 
+                if(point != null){
+                    trafo = Trafo(point,code,name,type,calendar,field)
 
-                trafo = Trafo(point,code,name,type,calendar,field)
-
-                addTrafoGraphic(point)
+                    addTrafoGraphic(point)
+                }
 
             }while (cursor.moveToNext())
         }
 
         map.graphicsOverlays.add(trafoGraphicsOverlay)
+        db.close()
     }
 
     private fun addTrafoGraphic(point:Point){
