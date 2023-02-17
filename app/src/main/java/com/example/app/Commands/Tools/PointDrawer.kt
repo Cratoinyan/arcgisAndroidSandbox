@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
@@ -16,6 +17,7 @@ import com.esri.arcgisruntime.mapping.view.MapView
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
 import com.example.app.Data.Trafo
+import com.example.app.MainActivity
 import com.example.app.Managers.DBManager
 import com.example.app.R
 import com.example.app.UI.SaveTrafoPopUp
@@ -24,7 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.graphics.Point as androidPoint
 
-class PointDrawer(private var context: Context, private var mapView: MapView, val dbManager: DBManager, val layout: ConstraintLayout) :ITool {
+class PointDrawer(private var context: Context, private var mapView: MapView, val dbManager: DBManager, val layout: ConstraintLayout,var activity:MainActivity) :ITool {
     private val pointGraphicsOverlay = GraphicsOverlay()
     override val id = "Add Point"
     private lateinit var point: Point
@@ -78,6 +80,6 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
         pointGraphicsOverlay.graphics.add(pointGraphic)
 
         //pop up menu to ask additional information about the point
-        saveTrafoPopUp.showPopUp(point)
+        saveTrafoPopUp.showPopUp(point,activity)
     }
 }

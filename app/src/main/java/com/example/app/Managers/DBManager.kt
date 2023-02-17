@@ -56,13 +56,14 @@ class DBManager(val geodatabasePath:String, val context: Context){
         }
     }
 
-    fun addTrafo(trafo: Trafo){
+    fun addTrafo(trafo: Trafo):Long{
         if (activeDB == 0){
             addTrafoToGeoDB(trafo)
         }
         else{
-            addTrafoToSQLite(trafo)
+            return addTrafoToSQLite(trafo)
         }
+        return -1
     }
 
     fun addTrafoToGeoDB(trafo: Trafo){
@@ -90,8 +91,8 @@ class DBManager(val geodatabasePath:String, val context: Context){
         sqLiteDB.loadTrafo(map)
     }
 
-    fun addTrafoToSQLite(trafo:Trafo){
-        sqLiteDB.addTrafo(trafo)
+    fun addTrafoToSQLite(trafo:Trafo):Long{
+        return sqLiteDB.addTrafo(trafo)
     }
 
     fun createSQLite(path: String){

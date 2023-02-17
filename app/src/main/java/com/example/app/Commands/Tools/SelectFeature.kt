@@ -56,16 +56,20 @@ class SelectFeature(private val context: Context, private val mapView: MapView, 
         val queryParams = QueryParameters()
         queryParams.spatialRelationship = QueryParameters.SpatialRelationship.INTERSECTS
         queryParams.geometry = extent
+        queryParams.maxFeatures = 1
         val result = featureLayer.selectFeaturesAsync(queryParams,FeatureLayer.SelectionMode.NEW)
 
         result.addDoneListener {
             try{
                 val resultIterator = result.get().iterator()
                 if (resultIterator.hasNext()){
-                    Toast.makeText(context,"There is a ${layerName} here",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"There is a ${layerName} here",Toast.LENGTH_SHORT).show()
+                    resultIterator.forEach { feature ->
+                        Toast.makeText(context,feature.attributes["name"].toString(),Toast.LENGTH_SHORT)
+                    }
                 }
                 else{
-                    Toast.makeText(context,"There is no ${layerName}",Toast.LENGTH_LONG).show()
+                       Toast.makeText(context,"There is no ${layerName}",Toast.LENGTH_LONG).show()
                     featureLayer.selectFeatures(selectedFeatures.get())
                 }
             }catch (e: Exception){

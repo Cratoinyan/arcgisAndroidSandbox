@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.graphics.Bitmap
 import android.util.Log
 import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.mapping.view.Graphic
@@ -14,6 +15,7 @@ import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERSION) {
@@ -22,8 +24,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         private val DB_NAME = "/sdcard/DATA/test.sqlite"
         private val TRAFO_TABLE_NAME = "trafo"
         private val COL_KEY = "ID"
-        private val COL_X = "X"
-        private val COL_Y = "Y"
+        private val COL_IMG = "IMG"
         private val COL_SHAPE = "SHAPE"
         private val COL_NAME = "NAME"
         private val COL_CODE = "CODE"
@@ -42,7 +43,8 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
                 "$COL_CODE text," +
                 "$COL_FIELD text," +
                 "$COL_TYPE," +
-                "$COL_DATE integerdate);")
+                "$COL_DATE integerdate," +
+                "$COL_IMG blob);")
         db?.execSQL(CREATE_CONTACTS_TABLE)
     }
 
@@ -133,5 +135,25 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         // add the point graphic to the graphics overlay
         trafoGraphicsOverlay.graphics.add(tragoGraphic)
 
+    }
+
+
+    fun updateTrafoImg(id:Long, img:Bitmap): Int {
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        val whereClause = "$COL_KEY = $id"
+
+        val stream = ByteArrayOutputStream()
+        img.compress(Bitmap.CompressFormat.PNG,90,stream)
+        val imgByte = stream.toByteArray()
+
+        contentValues.put(COL_IMG, imgByte)
+
+        val result = db.update(TRAFO_TABLE_NAME,contentValues,whereClause,null)
+        db.close()
+
+        return result
+        return -1
     }
 }
