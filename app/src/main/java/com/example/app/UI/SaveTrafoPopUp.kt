@@ -22,7 +22,7 @@ import com.example.app.Managers.DBManager
 import com.example.app.R
 import java.util.*
 
-class SaveTrafoPopUp(val context: Context,val dbManager: DBManager, val layout: ConstraintLayout, val pointGraphicsOverlay: GraphicsOverlay):AppCompatActivity() {
+class SaveTrafoPopUp(val context: Context,val dbManager: DBManager, val layout: ConstraintLayout, val pointGraphicsOverlay: GraphicsOverlay) {
     var popupWindow: PopupWindow? = null
 
     fun showPopUp(point: Point, activity: MainActivity){

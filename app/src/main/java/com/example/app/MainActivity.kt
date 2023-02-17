@@ -121,11 +121,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("hello","req code ="+requestCode + " cam code=" + cameraRequest)
         if (requestCode == cameraRequest && resultCode == Activity.RESULT_OK) {
             val photo: Bitmap = data?.extras?.get("data") as Bitmap
-//            val id = data?.extras?.get("id") as Long
-            val msg = data.getLongExtra("com.example.app.id",-1).toString()
-            if (msg != null) {
-                Log.i("hello",msg + " " + photo.toString())
-            }
+
             if(lastTrafoId != null){
                 val id:Long = lastTrafoId!!.toLong()
                 dbManager.sqLiteDB.updateTrafoImg(id, photo)
