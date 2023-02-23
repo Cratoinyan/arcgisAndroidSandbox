@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         dbManager = DBManager(geoDatabasePath,this)
-        mapManager = MapManager(mapView, dbManager)
+        mapManager = MapManager(mapView, dbManager,this)
         mapManager.setupMap()
 
         val scrollView = HorizontalScrollView(this)

@@ -1,5 +1,7 @@
 package com.example.app.Managers
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.data.Geodatabase
@@ -15,13 +17,17 @@ import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 
-class MapManager(var mapView: MapView,private val dbManager: DBManager) {
+class MapManager(var mapView: MapView,private val dbManager: DBManager, val context: Context) {
 
     lateinit var geoDataBase: Geodatabase
     val locationOverlay = GraphicsOverlay()
 
     // set up your map here. You will call this method from onCreate()
+    @SuppressLint("MissingPermission")
     fun setupMap() {
         setApiKeyForApp()
 
@@ -32,6 +38,12 @@ class MapManager(var mapView: MapView,private val dbManager: DBManager) {
         mapView.map = map
         // set the viewpoint, Viewpoint(latitude, longitude, scale)
         mapView.setViewpoint(Viewpoint(39.9334, 32.8597, 200000.0))
+
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener { location ->
+            mapView.setViewpoint(Viewpoint(location.latitude,location.longitude,20000.0))
+        }
 
         loadDB()
     }
