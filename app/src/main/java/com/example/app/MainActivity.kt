@@ -17,12 +17,16 @@
 package com.example.app
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
@@ -39,28 +43,43 @@ import com.example.app.Managers.DBManager
 import com.example.app.Managers.MapManager
 import com.example.app.Managers.ToolManager
 import com.example.app.databinding.ActivityMainBinding
+import com.google.android.gms.location.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val geoDatabasePath = "/sdcard/DATA/test.geodatabase"
-    private val cameraRequest = 1888
+    private val request = 1888
     private var lastTrafoId: Long? = null
+    private var permissionList = arrayOf(Manifest.permission.CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION)
+    private lateinit var locationTask: TimerTask
 
     private lateinit var toolManager: ToolManager
     private lateinit var mapManager: MapManager
     private lateinit var dbManager: DBManager
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: CurrentLocationRequest
+    private lateinit var locationCallback: LocationCallback
 
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activityMainBinding.root)
         val pd = PackageManager.PERMISSION_DENIED
 
-        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA)
-            == pd || ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.MANAGE_EXTERNAL_STORAGE) == pd ){
 
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraRequest)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.MANAGE_EXTERNAL_STORAGE), 3421)
+        if (!checkPermissions()){
+            ActivityCompat.requestPermissions(this,permissionList,request)
+            val uri = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
 
+            startActivity(
+                Intent(
+                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    uri
+                )
+            )
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         dbManager = DBManager(geoDatabasePath,this)
         mapManager = MapManager(mapView, dbManager)
@@ -83,6 +102,19 @@ class MainActivity : AppCompatActivity() {
         toolManager  = ToolManager(this@MainActivity, listOf(pointDrawer,lineDrawer,polygonDrawer,selectHat,selectTrafo,selectIstasyon,switchDB),linearLayout)
 
         toolManager.Initialize()
+
+        activityMainBinding.test.setOnClickListener {
+            if (checkPermissions()) {
+                fusedLocationClient.lastLocation.addOnCompleteListener { location ->
+                    Log.i("heyo",location.result.latitude.toString() + " " + location.result.longitude.toString())
+
+                }
+            }
+
+            Log.i("heyo",checkPermissions().toString())
+
+
+        }
     }
 
     private val activityMainBinding by lazy {
@@ -94,6 +126,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+        locationTask.cancel()
         mapView.pause()
         super.onPause()
     }
@@ -101,6 +134,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mapView.resume()
+        if(checkPermissions()){
+            startLocationUpdates()
+        }
     }
 
     override fun onDestroy() {
@@ -108,18 +144,37 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates(){
+        if(checkPermissions()){
+            locationTask = object : TimerTask(){
+                @SuppressLint("MissingPermission")
+                override fun run() {
+                    if(checkPermissions()){
+                        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener { location: Location? ->
+                            Log.i("my-loc",location.toString())
+                            if (location != null) mapManager.updateLocation(location)
+                        }
+                    }
+                }
+            }
+
+            Timer().schedule(locationTask,0,5000)
+        }
+    }
+
     fun takeTrafoPhoto(id:Long){
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra("com.example.app.id",id)
         lastTrafoId = id
         Log.i("hello",id.toString())
-        startActivityForResult(cameraIntent,cameraRequest)
+        startActivityForResult(cameraIntent,request)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.i("hello","req code ="+requestCode + " cam code=" + cameraRequest)
-        if (requestCode == cameraRequest && resultCode == Activity.RESULT_OK) {
+        Log.i("hello","req code ="+requestCode + " cam code=" + request)
+        if (requestCode == request && resultCode == Activity.RESULT_OK) {
             val photo: Bitmap = data?.extras?.get("data") as Bitmap
 
             if(lastTrafoId != null){
@@ -127,6 +182,16 @@ class MainActivity : AppCompatActivity() {
                 dbManager.sqLiteDB.updateTrafoImg(id, photo)
             }
         }
+    }
+
+    private fun checkPermissions(): Boolean{
+        permissionList.forEach { permission ->
+            if(ContextCompat.checkSelfPermission(this,permission) == PackageManager.PERMISSION_DENIED){
+                Log.i("heyo",permission)
+                return false
+            }
+        }
+        return true
     }
 }
 

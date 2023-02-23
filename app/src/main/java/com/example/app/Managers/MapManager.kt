@@ -1,17 +1,25 @@
 package com.example.app.Managers
 
+import android.location.Location
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.data.Geodatabase
+import com.esri.arcgisruntime.geometry.Point
+import com.esri.arcgisruntime.geometry.SpatialReference
 import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.loadable.LoadStatus
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
+import com.esri.arcgisruntime.mapping.view.Graphic
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
+import com.esri.arcgisruntime.symbology.SimpleLineSymbol
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
 
 class MapManager(var mapView: MapView,private val dbManager: DBManager) {
 
     lateinit var geoDataBase: Geodatabase
+    val locationOverlay = GraphicsOverlay()
 
     // set up your map here. You will call this method from onCreate()
     fun setupMap() {
@@ -38,5 +46,22 @@ class MapManager(var mapView: MapView,private val dbManager: DBManager) {
 
     private fun loadDB(){
         dbManager.loadDB(mapView.map)
+        mapView.graphicsOverlays.add(locationOverlay)
+    }
+
+    fun updateLocation(location: Location){
+        locationOverlay.graphics.clear()
+        val point = Point(location.longitude,location.latitude,SpatialReference.create(4326))
+
+        val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0x03b6fc, 10f)
+
+        val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
+        simpleMarkerSymbol.outline = blueOutlineSymbol
+
+        // create a graphic with the point geometry and symbol
+        val pointGraphic = Graphic(point, simpleMarkerSymbol)
+
+        // add the point graphic to the graphics overlay
+        locationOverlay.graphics.add(pointGraphic)
     }
 }

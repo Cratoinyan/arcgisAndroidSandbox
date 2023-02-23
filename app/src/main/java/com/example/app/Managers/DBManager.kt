@@ -2,6 +2,7 @@ package com.example.app.Managers
 
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
+import android.location.Location
 import android.util.Log
 import com.esri.arcgisruntime.data.ArcGISFeature
 import com.esri.arcgisruntime.data.Feature
