@@ -8,17 +8,23 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.mapping.view.Graphic
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
+import com.esri.arcgisruntime.symbology.PictureMarkerSymbol
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
+import com.esri.arcgisruntime.symbology.Symbol
 import java.io.ByteArrayOutputStream
 import java.util.*
 
-class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERSION) {
+class SQLiteDB(val context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERSION) {
     companion object{
         private val DB_VERSION = 1
         private val DB_NAME = "/sdcard/DATA/test.sqlite"
@@ -32,7 +38,13 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         private val COL_TYPE = "TYPE"
         private val COL_DATE = "DATE"
 
+        var trafoImgGraphicsOverlay = GraphicsOverlay()
         var trafoGraphicsOverlay = GraphicsOverlay()
+    }
+
+    init {
+        trafoImgGraphicsOverlay.minScale = 2000.0
+        trafoGraphicsOverlay.maxScale = 2000.0
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -53,6 +65,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         onCreate(db)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addTrafo(trafo: Trafo): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
@@ -69,11 +82,12 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         val result = db.insert(TRAFO_TABLE_NAME,null,contentValues)
 
         db.close()
-        addTrafoGraphic(trafo.point)
+        addTrafoGraphic(trafo,null)
         return result
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("Range")
     fun loadTrafo(map:MapView){
         val db = this.readableDatabase
@@ -96,6 +110,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         var date:Long
         var field:String
         var trafo:Trafo
+        var img:ByteArray?
 
         if(cursor.moveToFirst()){
             do {
@@ -105,6 +120,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
                 date = cursor.getLong(cursor.getColumnIndex(COL_DATE))
                 field = cursor.getString(cursor.getColumnIndex(COL_FIELD))
                 shape = cursor.getString(cursor.getColumnIndex(COL_SHAPE))
+                img = cursor.getBlob(cursor.getColumnIndex(COL_IMG))
 
                 point = Point.fromJson(shape) as Point
                 var calendar = Calendar.getInstance()
@@ -113,28 +129,45 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
                 if(point != null){
                     trafo = Trafo(point,code,name,type,calendar,field)
 
-                    addTrafoGraphic(point)
+                    addTrafoGraphic(trafo,img)
                 }
 
             }while (cursor.moveToNext())
         }
 
+        map.graphicsOverlays.add(trafoImgGraphicsOverlay)
         map.graphicsOverlays.add(trafoGraphicsOverlay)
         db.close()
     }
 
-    private fun addTrafoGraphic(point:Point){
-        val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addTrafoGraphic(trafo: Trafo, img:ByteArray?){
 
-        val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
-        simpleMarkerSymbol.outline = blueOutlineSymbol
+        //if the trafo has an image add it to another graphicsOverlay so it will be shown when zoomed in
+        if(img != null){
+            var symbol:Symbol
+            val bitmap = BitmapFactory.decodeByteArray(img,0,img.size)
+            val imageSymbol = PictureMarkerSymbol.createAsync(BitmapDrawable(bitmap))
+            imageSymbol.addDoneListener {
+                symbol = imageSymbol.get()
 
-        // create a graphic with the point geometry and symbol
-        val tragoGraphic = Graphic(point, simpleMarkerSymbol)
+                // create a graphic with the point geometry and symbol
+                val tragoGraphic = Graphic(trafo.point, symbol)
 
-        // add the point graphic to the graphics overlay
-        trafoGraphicsOverlay.graphics.add(tragoGraphic)
+                // add the point graphic to the graphics overlay
+                trafoImgGraphicsOverlay.graphics.add(tragoGraphic)
 
+            }
+        }
+            val symbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
+
+            val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
+            symbol.outline = blueOutlineSymbol
+            // create a graphic with the point geometry and symbol
+            val tragoGraphic = Graphic(trafo.point, symbol)
+
+            // add the point graphic to the graphics overlay
+            trafoGraphicsOverlay.graphics.add(tragoGraphic)
     }
 
 
@@ -145,7 +178,7 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         val whereClause = "$COL_KEY = $id"
 
         val stream = ByteArrayOutputStream()
-        img.compress(Bitmap.CompressFormat.PNG,90,stream)
+        img.compress(Bitmap.CompressFormat.JPEG,90,stream)
         val imgByte = stream.toByteArray()
 
         contentValues.put(COL_IMG, imgByte)
@@ -154,6 +187,5 @@ class SQLiteDB(context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_VERS
         db.close()
 
         return result
-        return -1
     }
 }

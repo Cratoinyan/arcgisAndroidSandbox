@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.esri.arcgisruntime.geometry.*
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
@@ -89,6 +90,9 @@ class PointDrawer(private var context: Context, private var mapView: MapView, va
             if((point.x > extent.xMin && point.x < extent.xMax) &&
                 (point.y > extent.yMin && point.y < extent.yMax))
                     drawPoint(point)
+            else{
+                Toast.makeText(context,"That point is too far away from your location",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
