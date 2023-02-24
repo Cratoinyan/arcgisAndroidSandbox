@@ -25,16 +25,17 @@ class DBManager(val geodatabasePath:String, val context: Context){
         sqLiteDB = SQLiteDB(context)
     }
 
-    fun switchDB(map: MapView){
+    fun switchDB(map: MapManager){
         if(activeDB == 0){
             activeDB = 1
-            map.map.operationalLayers.clear()
-            loadFromSQLite(map)
+            map.mapView.map.operationalLayers.clear()
+            loadFromSQLite(map.mapView)
         }
         else{
             activeDB = 0
-            map.graphicsOverlays.clear()
-            loadDB(map.map)
+            map.mapView.graphicsOverlays.clear()
+            map.mapView.graphicsOverlays.add(map.locationOverlay)
+            loadDB(map.mapView.map)
         }
     }
 

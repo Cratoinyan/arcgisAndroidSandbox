@@ -6,7 +6,7 @@ import com.example.app.Managers.MapManager
 
 class SwitchDB(var dbManager: DBManager, var mapManager: MapManager):ICommand {
     override fun run() {
-        dbManager.switchDB(mapManager.mapView)
+        dbManager.switchDB(mapManager)
     }
 
     override val id: String = "Switch DB"
