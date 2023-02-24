@@ -3,6 +3,7 @@ package com.example.app.Managers
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import android.util.Log
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.data.Geodatabase
 import com.esri.arcgisruntime.geometry.Point
@@ -65,9 +66,9 @@ class MapManager(var mapView: MapView,private val dbManager: DBManager, val cont
         locationOverlay.graphics.clear()
         val point = Point(location.longitude,location.latitude,SpatialReference.create(4326))
 
-        val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0x03b6fc, 10f)
+        val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0x039fc4, 10f)
 
-        val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
+        val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0x6394fc, 2f)
         simpleMarkerSymbol.outline = blueOutlineSymbol
 
         // create a graphic with the point geometry and symbol
