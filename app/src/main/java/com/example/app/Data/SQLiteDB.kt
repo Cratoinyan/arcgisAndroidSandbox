@@ -17,10 +17,7 @@ import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.mapping.view.Graphic
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
-import com.esri.arcgisruntime.symbology.PictureMarkerSymbol
-import com.esri.arcgisruntime.symbology.SimpleLineSymbol
-import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
-import com.esri.arcgisruntime.symbology.Symbol
+import com.esri.arcgisruntime.symbology.*
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -45,6 +42,14 @@ class SQLiteDB(val context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_
     init {
         trafoImgGraphicsOverlay.minScale = 2000.0
         trafoGraphicsOverlay.maxScale = 2000.0
+
+        val symbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
+
+        val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
+        symbol.outline = blueOutlineSymbol
+
+        trafoGraphicsOverlay.renderer = SimpleRenderer(symbol)
+        trafoImgGraphicsOverlay.renderer = SimpleRenderer(symbol)
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -143,6 +148,12 @@ class SQLiteDB(val context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_
     @RequiresApi(Build.VERSION_CODES.O)
     private fun addTrafoGraphic(trafo: Trafo, img:ByteArray?){
 
+        // create a graphic with the point geometry and symbol
+        val trafoGraphic = Graphic(trafo.point)
+
+        // add the point graphic to the graphics overlay
+        trafoGraphicsOverlay.graphics.add(trafoGraphic)
+
         //if the trafo has an image add it to another graphicsOverlay so it will be shown when zoomed in
         if(img != null){
             var symbol:Symbol
@@ -152,22 +163,16 @@ class SQLiteDB(val context: Context):SQLiteOpenHelper(context, DB_NAME,null, DB_
                 symbol = imageSymbol.get()
 
                 // create a graphic with the point geometry and symbol
-                val tragoGraphic = Graphic(trafo.point, symbol)
+                val trafoImgGraphic = Graphic(trafo.point, symbol)
 
                 // add the point graphic to the graphics overlay
-                trafoImgGraphicsOverlay.graphics.add(tragoGraphic)
+                trafoImgGraphicsOverlay.graphics.add(trafoImgGraphic)
 
             }
         }
-            val symbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
-
-            val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
-            symbol.outline = blueOutlineSymbol
-            // create a graphic with the point geometry and symbol
-            val tragoGraphic = Graphic(trafo.point, symbol)
-
-            // add the point graphic to the graphics overlay
-            trafoGraphicsOverlay.graphics.add(tragoGraphic)
+        else{
+            trafoImgGraphicsOverlay.graphics.add(Graphic(trafo.point))
+        }
     }
 
 
